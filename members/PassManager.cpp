@@ -1,6 +1,3 @@
-// To whoms is marking this. 
-// Please take the time to read the README.md file in the root of the project as it provides context and development plans of this project.
-
 #include <iostream> // cout, cin
 #include <string> // string
 #include <fstream> // file io
@@ -123,6 +120,21 @@ void createUsers::set_PassWord() // set password function [working]
     this->masterPassword = encryptedMasterPassword; // set master password class variable
 }
 
+void createUsers::set_email() // set email function
+{
+  // future implementation
+}
+
+void createUsers::set_securityQuestions() // set security questions function
+{
+  // future implementation 3 security questions and answers check example db 
+}
+
+void createUsers::generate_recoveryCodes() // generate recovery codes function
+{
+  // future implementation, md5 hash, guid or uuid, maybe jwt look into this further, check example db
+}
+
 void createUsers::save_users() // save user data to file [working]
 {
     // Open the JSON file
@@ -147,6 +159,12 @@ void createUsers::save_users() // save user data to file [working]
     outFile << data.dump(4); // '4' is for pretty-printing
     outFile.close();
 } // save user data to file [working]
+
+void createUsers::clear_Maps() // clear maps function [working]
+{
+    this->securityQuestions.clear();
+    this->recoveryCodes.clear();
+} // clear maps function [working]
 
 //! logged in user functions
 void passwordManager::save_MapToFile() // save user data from map to file essential to the function of the program [working]
@@ -778,6 +796,7 @@ void passwordManager::logout_user(bool force) // logout [working]
     this->clear_Map(); // clear maps
     exit(0); // exit program
 } // logout
+
 //! general system functions
 int sys::menu1() // main menu [working]
 {

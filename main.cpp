@@ -1,5 +1,3 @@
-// To whoms is marking this. 
-// Please take the time to read the README.md file in the root of the project as it provides context and development plans of this project.
 //! I use coloured comments any comments containing ! ? * are for my note taking and place keeping i have removed many of them for the final submission
 //! But some may have been missed.
 
@@ -31,9 +29,7 @@ int main()
         case 1: // create user
         {
             newUser.set_userName(); // set username
-            //? Note 1: encryptedUsername = general.encryption(username); // encrypt username
             newUser.set_PassWord(); // set password
-            //encryptedPassword = general.encryption(password); // encrypt password
 
             newUser.save_users(); // temp save username and password to file
             break;
@@ -42,7 +38,6 @@ int main()
         {
             User.user_login(); // login
             
-            //valid = User.user_login(username, masterPassword); // login
             while (true)
             {
                 menuChoice2 = general.menu2(); // second menu for password manager
@@ -50,31 +45,26 @@ int main()
                 {
                     case 1: // view passwords
                     {
-                        // cout << "view passwords" << endl;
                         User.view_userPasswords();
                         break;
                     }
                     case 2: // add password
                     {
-                        //cout << "add password" << endl;
                         User.add_userPassword();
                         break;
                     }
                     case 3: // edit password
                     {
-                        // cout << "edit password" << endl;
                         User.edit_userPassword();
                         break;
                     }
                     case 4: // generate password
                     {
-                        // cout << "generate password" << endl;
                         User.generate_userPassword();
                         break;
                     }
                     case 5: // remove password
                     {
-                        //cout << "remove password" << endl;
                         User.remove_userPassword();
                         break;
                     }
@@ -97,8 +87,6 @@ int main()
         {
             break;
         }
-            //cout << "numpty fuck" << endl;
-            //break;
     }
     return 0;
 }
