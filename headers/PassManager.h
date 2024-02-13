@@ -17,7 +17,7 @@ class passwordRecovery
 
         void get_recoveryCodes(); // get recovery codes from file, save to map
         
-        void get_securityQuestions(); // get security questions from file, save to map
+        void get_securityQuestion(); // get security questions from file, save to map.
 
         void reset_password();
 
@@ -80,7 +80,8 @@ class createUsers {
         void set_email();
 
         //! user recovery functions
-        void set_securityQuestions();
+        void set_securityQuestion();
+        void set_securityAnswer(string question);
         void generate_recoveryCodes();
 
         void save_users(); // username, masterPassword

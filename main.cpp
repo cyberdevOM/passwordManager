@@ -30,6 +30,8 @@ int main()
         {
             newUser.set_userName(); // set username
             newUser.set_PassWord(); // set password
+            newUser.set_email(); // set email
+            newUser.set_securityQuestion(); // set security question
 
             newUser.save_users(); // temp save username and password to file
             break;

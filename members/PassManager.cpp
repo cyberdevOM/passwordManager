@@ -8,10 +8,39 @@
 #include <typeinfo> // for debugging
 #include "../nlohmann/json.hpp" // json for nlohmann library
 #include "../headers/PassManager.h" // header file for password manager
+#include <chrono> // for sleep_for
+#include <thread> // for sleep_for
 
 using json = nlohmann::json; // json for nlohmann library
 using std::map; // map for userAccountMap and usedIds
 using namespace std; // std namespace for all other functions
+
+//! Password Recovery Functions
+void passwordRecovery::get_username()
+{
+    // future implementation
+}
+
+void passwordRecovery::get_email()
+{
+    // future implementation
+}
+
+void passwordRecovery::get_recoveryCodes()
+{
+    // future implementation
+}
+
+void passwordRecovery::get_securityQuestion()
+{
+    // future implementation
+}
+
+void passwordRecovery::reset_password()
+{
+    // future implementation
+}
+
 
 //! create user functions
 void createUsers::set_userName() // set username function [working]
@@ -122,12 +151,115 @@ void createUsers::set_PassWord() // set password function [working]
 
 void createUsers::set_email() // set email function
 {
-  // future implementation
+    sys general;
+    string email;
+    int attempts = 0;
+
+    do {
+        cout << "Please enter your email address: ";
+        getline(cin, email);
+
+        if (email.empty()) {
+            cout << "bye!" << endl;
+            exit(0);
+        } else if (email.length() > 126 || email.length() < 1 || email.find_first_of(" ") != string::npos || email.find_first_of("@") == string::npos || email.find_first_of(".") == string::npos) {
+            cout << "the email you have entered does not meet the requirements." << endl;
+            attempts++;
+            continue;
+        } else {
+            break;
+        }
+
+        if (attempts == 5) {
+            cout << "you have had 5 attempts, please come back when you can read" << endl;
+            exit(0);
+        }
+    } while (true);
+
+    this->email = email;
 }
 
-void createUsers::set_securityQuestions() // set security questions function
+void createUsers::set_securityQuestion() // set security questions function
 {
-  // future implementation 3 security questions and answers check example db 
+    sys general;
+
+    array<array<string, 5>, 3> questionsArr = {
+        array <string, 5> {"What is your mothers maiden name?", "What is the name of your first pet?", "What is the name of the street you grew up on?", "What is the name of your first school?", "What is your favourite colour?"},
+        array <string, 5> {"What is your favourite food?", "What is your favourite movie?", "What is your favourite book?", "What is your favourite song?", "What is your favourite animal?"},
+        array <string, 5> {"What is your favourite sport?", "What is your favourite hobby?", "What is your favourite holiday destination?", "What is your favourite car?", "What is your favourite drink?"}
+    };
+
+    string question, answer;
+    int input;
+    for (int i = 0; i < 3; i++) {
+        int attempts = 0;
+        auto& current_array = questionsArr[i];
+
+        while (question.empty()) {
+            cout << "Please select a security question from the list below: " << endl;
+            for (int j = 0; j < 5; j++) {
+                cout << j + 1 << ". " << current_array[j] << endl;
+            }
+
+            cout << "Please enter a security question: ";
+            getline(cin, question);
+
+            if (question.find_first_not_of("12345") != string::npos || question.empty())
+            {
+                cout << "the question you have entered does not meet the requirements." << endl;
+                attempts++;
+                if (attempts == 5) {
+                    cout << "you have had 5 attempts, please come back when you can read" << endl;
+                    exit(0);
+                }
+                question.clear();
+                continue;
+            } else {
+                input = stoi(question);
+                question = current_array[input - 1];
+            }
+        }
+
+        if (find(current_array.begin(), current_array.end(), question) != current_array.end()) {
+            this->set_securityAnswer(question);
+            cout << "Security question added successfully!" << endl;
+            std::this_thread::sleep_for(std::chrono::seconds(2)); // sleep for 2 seconds
+            question.clear();
+            general.clearScreen();
+        } else {
+            cout << "the question you have entered is not a valid question." << endl;
+            exit(0);
+        }
+    }
+}
+void createUsers::set_securityAnswer(string question) // set security answers function
+{
+    sys general;
+
+    while (true) {
+        string answer;
+        int attempts = 0;
+
+        cout << "Please enter the answer to the security question: ";
+        getline(cin, answer);
+        if (answer.empty()) {
+            cout << "bye!" << endl;
+            exit(0);
+        } else if (answer.length() > 200 || answer.length() < 1) {
+            cout << "the answer you have entered does not meet the requirements." << endl;
+            attempts++;
+            if (attempts == 5) {
+                cout << "you have had 5 attempts, please come back when you can read" << endl;
+                exit(0);
+            }
+            continue;
+        } else {
+            string encryptedAnswer = general.encryption(answer);
+            this->securityQuestions[question] = encryptedAnswer;
+            break;
+        }
+
+    }
 }
 
 void createUsers::generate_recoveryCodes() // generate recovery codes function
@@ -147,11 +279,26 @@ void createUsers::save_users() // save user data to file [working]
     }
     inFile.close();
 
+    // Create a new JSON object for security questions
+    nlohmann::json securityJson;
+    for (const auto& question : this->securityQuestions) {
+        securityJson[question.first] = question.second;
+    }
+
+    // Create a new JSON object for recovery codes
+    nlohmann::json recoveryJson;
+    for (const auto& code : this->recoveryCodes) {
+        recoveryJson[code.first] = code.second;
+    }
+
     // Add the new user data
     data[this->username] = {
+        {"email", this->email},
         {"username", this->username},
         {"mPassword", this->masterPassword},
-        {"passwords", nlohmann::json::object()}
+        {"passwords", nlohmann::json::object()},
+        {"securityQuestions", securityJson},
+        {"recoveryCodes", recoveryJson}
     };
 
     // Write the updated data back to the file
